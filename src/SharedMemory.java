@@ -98,9 +98,14 @@ public class SharedMemory {
 		
 		int noOfFileChunks = fileNo; //No of file chunks created
 		FileWriter writer = null;
+		String folder = "UNSORTED_CHUNKS/";
+		File dir = new File(folder);
+		if(!dir.exists()){
+			dir.mkdir();
+		}
 		int size = rows.size();
 		try {
-			writer = new FileWriter("UNSORTED_CHUNKS/"+fileNo+".txt");
+			writer = new FileWriter(folder+fileNo+".txt");
 			for (String str: rows) {
 	            writer.write(str);
 	            if(str.contains(" "))//This prevent creating a blank like at the end of the file**

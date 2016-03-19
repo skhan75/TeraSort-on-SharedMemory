@@ -16,7 +16,6 @@ import java.util.PriorityQueue;
 public class ThreadManager implements Runnable{
 
 	private File[] unSortedFiles;
-	private File[] sortedFiles;
 	static Comparator<String> comparator;
 	int c = 0;
 	final File outputFile = new File("output.txt");
@@ -27,9 +26,6 @@ public class ThreadManager implements Runnable{
 	ThreadManager(){
 		File f = new File("UNSORTED_CHUNKS/");
 	    unSortedFiles = f.listFiles();
-	    
-	    File dir = new File("SORTED_CHUNKS/");
-	    sortedFiles = dir.listFiles();
 	}
 	
 	public void Manager(final long start) throws IOException, InterruptedException {
@@ -99,6 +95,7 @@ public class ThreadManager implements Runnable{
 	private ArrayList<String> chunksReadAndSort(int i) throws IOException {
 		
 		String fname;
+		
 		ArrayList<String> lines = null;
 		ArrayList<String> StringList = null;
 		BufferedReader br = null;
@@ -249,7 +246,14 @@ public class ThreadManager implements Runnable{
 	 * @throws IOException
 	 */
 	private void writeSortedChunks(ArrayList<String> sortedLines, int i) throws IOException {
-		File tmpfile = new File("SORTED_CHUNKS/"+(i+1)+".txt");
+		
+		String folder = "SORTED_CHUNKS/";
+		File dir = new File(folder); //If the folder doesn't exists it will create one
+		if(!dir.exists()){
+			dir.mkdir();
+		}
+		
+		File tmpfile = new File(folder+(i+1)+".txt");
 		BufferedWriter fbw = new BufferedWriter(new FileWriter(tmpfile));
 		for(String str: sortedLines) {
 			fbw.write(str);
