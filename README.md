@@ -1,7 +1,7 @@
 # TeraSort-on-SharedMemory
 "in.txt" is a gensort generated text. You can create one with this http://www.ordinal.com/gensort.html
 
-Creating a Gensort string file:
+Creating a Gensort Text file:
 -------------------------------
 1. Go to directory where you've installed gensort.
 2. Type ./gensort -a <no_of_Records> <filename.txt>  
