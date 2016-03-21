@@ -18,10 +18,15 @@ public class SharedMemory {
 		System.out.println("File Processing Started...\nPlease Wait ! This may take time.\n");
 		inputFile = new File(input);
 		
+		System.out.println("Available processors (cores): " + Runtime.getRuntime().availableProcessors());
+		
 		System.out.println("Splitting Files into chunks");
 		long start = System.currentTimeMillis();
-		readerAndSplitter(input); //Reading a big file and splitting into smaller chunks according to blockSize
+		
+		//Reading a big file and splitting into smaller chunks according to blockSize
+		readerAndSplitter(input); 
 		System.out.println("[You can find them in the Application's root directory as 'UNSORTED_CHUNKS]\n");
+		
 		ThreadManager tmg = new ThreadManager();
 		tmg.Manager(start); //object declaration	
 	}	
@@ -32,17 +37,21 @@ public class SharedMemory {
        for no reason. 
        If blocksize is smaller than half the free memory, grow it.
 	 * @param filetobesorted
+	 * @param bigFileSize 
 	 * @return
 	 */
-	public static long blocksSizer(File filetobesorted) {
-        long sizeoffile = filetobesorted.length();
+	public static long blocksSizer(File filetobesorted, long bigFileSize) {
+		
+		long freeMem;
         final int MAXTEMPFILES = 1024;
-        long blocksize = sizeoffile / MAXTEMPFILES ;
-        long freemem = Runtime.getRuntime().freeMemory();
-        if( blocksize < freemem/2)
-            blocksize = freemem/2;
+        long blocksize = bigFileSize / MAXTEMPFILES ;
+        
+        // Total amount of free memory available to the JVM 
+        System.out.println("Free memory (bytes): " + (freeMem = Runtime.getRuntime().freeMemory()));
+        if( blocksize < freeMem/2)
+            blocksize = freeMem/2;
         else {
-            if(blocksize >= freemem) 
+            if(blocksize >= freeMem) 
               System.err.println("Ran out of memory! ");
         }
         return blocksize;
@@ -55,11 +64,16 @@ public class SharedMemory {
 	 * @param input
 	 */
 	public static void readerAndSplitter(String input) throws FileNotFoundException{
+		
 		BufferedReader br = null; //Declaring buffered reader for storing lines
 		PrintWriter outputStream = null;
-		long blocksize = blocksSizer(new File(input));// in bytes
+		File file = new File(input);
+		long bigFileSize = file.length();
+		long blocksize = blocksSizer(file, bigFileSize);// return best block size in bytes
+		
 		int rowCount = 1;
 		int fileNo = 1;
+		
 		ArrayList<String> rows = new ArrayList<String>(); //It will store all the lines and provide for each chunk
 		
 		try {
