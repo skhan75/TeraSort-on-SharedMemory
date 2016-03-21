@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Hashtable;
@@ -17,8 +18,7 @@ public class ThreadManager implements Runnable{
 
 	private File[] unSortedFiles;
 	static Comparator<String> comparator;
-	int c = 0;
-	final File outputFile = new File("output.txt");
+	final static File outputFile = new File("output.txt"); //File name where final output will be saved
 	int noOfFiles;
 	
 	/**
@@ -271,11 +271,12 @@ public class ThreadManager implements Runnable{
 		File[] allFiles = folder.listFiles();
 		
 		for(File file: allFiles){
-			if(file.getName() != ".DS_Store" && file.isFile()){
-				//System.out.println(file.getName());
+			if(file.getName() != ".DS_Store" && file.isFile()){ 
 				files.add(file);
 			}
 		}
+		
+		//outputFile = oneMerge(files);
 		
         PriorityQueue<BinaryFileBuffer> pq = new PriorityQueue<BinaryFileBuffer>(11, 
             new Comparator<BinaryFileBuffer>() {
@@ -287,9 +288,9 @@ public class ThreadManager implements Runnable{
         
         for (File f : files) {
             BinaryFileBuffer bfb = new BinaryFileBuffer(f);
-            pq.add(bfb);
-            
+            pq.add(bfb);    
         }
+        
         BufferedWriter fbw = new BufferedWriter(new FileWriter(outputfile));
         int rowcounter = 0;
         try {
@@ -313,5 +314,41 @@ public class ThreadManager implements Runnable{
         }
         return rowcounter;
 	}	
+	
+	/*public static File oneMerge(List<File> files){
+		List<File> left = new ArrayList<File>();
+		List<File> right = new ArrayList<File>();
+		File out = new File("out.txt");
+		PrintWriter output=new PrintWriter(out);
+		int index = 0;
+		int center;
+		
+		if (files.size() == 1) {   
+			out = 
+	        return (files.get(index));
+	    } 
+		else {
+	        center = files.size()/2;
+	        // copy the left half of whole into the left.
+	        for (int i=0; i<center; i++) {
+	        		files.get(i)
+	                left.add(files.get(i));
+	        }
+	        //copy the right half of whole into the new arraylist.
+	        for (int i=center; i<files.size(); i++) {
+	                right.add(files.get(i));
+	        }
+	        // Sort the left and right halves of the arraylist.
+	        left  = mergeSort(left);
+	        right = mergeSort(right);
+	 
+	        // Merge the results back together.
+	        merge(left, right, files);
+	    }
+	    return files;
+	}
+				
+		
+	}*/
 }
 

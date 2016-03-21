@@ -40,7 +40,6 @@ class BinaryFileBuffer  {
         fbr.close();
     }
      
-     
     public String peek() {
         if(empty()) return null;
         return cache.toString();
