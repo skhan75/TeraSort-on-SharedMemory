@@ -15,18 +15,18 @@ public class SharedMemory {
 	
 	public static void main(String[] args) throws InterruptedException, IOException{
 		input = "TestInput.txt";
-		System.out.println("File Processing Started...\nPlease Wait ! This may take time.\n");
-		inputFile = new File(input);
 		
-		System.out.println("Available processors (cores): " + Runtime.getRuntime().availableProcessors());
+		/* Displaying the System/Hardware/CPU Information on which this code will run */
+		SystemInformation info = new SystemInformation();
+		info.info();
+		System.out.println("\nFILE PROCESSING STARTED...\n------------------------------------------------------------------\n"
+				+ "Please Wait ! This may take time.\n");
+		inputFile = new File(input);
 		
 		System.out.println("Splitting Files into chunks");
 		long start = System.currentTimeMillis();
-		
-		//Reading a big file and splitting into smaller chunks according to blockSize
-		readerAndSplitter(input); 
+		readerAndSplitter(input); //Reading a big file and splitting into smaller chunks according to blockSize
 		System.out.println("[You can find them in the Application's root directory as 'UNSORTED_CHUNKS]\n");
-		
 		ThreadManager tmg = new ThreadManager();
 		tmg.Manager(start); //object declaration	
 	}	
@@ -37,17 +37,15 @@ public class SharedMemory {
        for no reason. 
        If blocksize is smaller than half the free memory, grow it.
 	 * @param filetobesorted
-	 * @param bigFileSize 
 	 * @return
 	 */
-	public static long blocksSizer(File filetobesorted, long bigFileSize) {
-		
+	public static long estimateBestSizeOfBlocks(File filetobesorted) {
 		long freeMem;
+        long sizeoffile = filetobesorted.length();
         final int MAXTEMPFILES = 1024;
-        long blocksize = bigFileSize / MAXTEMPFILES ;
-        
-        // Total amount of free memory available to the JVM 
-        System.out.println("Free memory (bytes): " + (freeMem = Runtime.getRuntime().freeMemory()));
+        long blocksize = sizeoffile / MAXTEMPFILES ;
+        /* Total amount of free memory available to the JVM */
+        System.out.println("Free memory (bytes): " + (freeMem=Runtime.getRuntime().freeMemory()));
         if( blocksize < freeMem/2)
             blocksize = freeMem/2;
         else {
@@ -64,29 +62,26 @@ public class SharedMemory {
 	 * @param input
 	 */
 	public static void readerAndSplitter(String input) throws FileNotFoundException{
-		
-		BufferedReader br = null; //Declaring buffered reader for storing lines
+		BufferedReader reader = null;
 		PrintWriter outputStream = null;
 		File file = new File(input);
-		long bigFileSize = file.length();
-		long blocksize = blocksSizer(file, bigFileSize);// return best block size in bytes
-		
+		long blocksize = estimateBestSizeOfBlocks(file);// in bytes
 		int rowCount = 1;
 		int fileNo = 1;
-		
 		ArrayList<String> rows = new ArrayList<String>(); //It will store all the lines and provide for each chunk
 		
 		try {
-			br  = new BufferedReader(new FileReader(input));
+			reader  = new BufferedReader(new FileReader(input));
 		String line = "";
+		
 			while (line!=null){
-				line = br.readLine();
 				long currentblocksize = 0;// in bytes
-				while(currentblocksize < blocksize && (line) != null){
+				while(currentblocksize < blocksize && (line = reader.readLine()) != null){
 					rows.add(line);
 					currentblocksize += line.length(); 
 				}
 				fileChunkMaker(rows, fileNo);
+				System.out.println("Chunk# "+fileNo);
 				fileNo++;
 				rows.clear();
 			}
@@ -94,6 +89,7 @@ public class SharedMemory {
 		catch (IOException e) {
 			e.printStackTrace();
 		}
+		System.out.println("Unsorted Chunks created..");
 	}
 	
 	/**
@@ -121,8 +117,8 @@ public class SharedMemory {
 	                writer.write("\n");
 	        }
 	        writer.close();
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (IOException e1) {
+			e1.printStackTrace();
 		}			
 	}	
 }
