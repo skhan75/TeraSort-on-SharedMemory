@@ -77,6 +77,9 @@ public class ThreadManager implements Runnable{
 		executorService.shutdown();	
 	}
 	
+	/**
+	 * Thread's Run function
+	 */
 	@Override
 	public void run() {
 		try {
@@ -109,7 +112,9 @@ public class ThreadManager implements Runnable{
 			String val = line.substring(10, line.length());
 			lines.add(key+val);
 		}
+	
 		StringList = sort(lines,i); // Calling the sort() function
+		//System.out.print(i +"/r"); 
 		
 		return StringList;		
 	}
@@ -129,32 +134,22 @@ public class ThreadManager implements Runnable{
 		String key;
 		String val = null;
 		int count = 0;
-		//System.out.println("#Lines in File:"+i+": "+lines.size());
+		
 		keys = new ArrayList<String>(); 
 		
 		for(String ss: lines){
 			
 			//Declaring object for keys
 			key = ss.substring(0, 10);
-			//System.out.println(key); //--> RECIEVEING KEY fine !
-		
 			val = ss.substring(10,ss.length());
-			//System.out.println(val); --> RECEIEVING VAL fine !
-			
 			keys.add(key);
 			whole.put(key,val);
 				
-			
 			count++;
 		}
-		//System.out.println("No of keys: "+keys.size());  // !!!!! Just taking last key and sending to mergesort
-		
-		//System.out.println("No of unsorted lines in this file"+keys.size());
 		sortedKeys = mergeSort(keys);
-		//System.out.println(sortedKeys.size());
 		sortedLines = new ArrayList<String>();
 		for(String s1: sortedKeys){
-			//System.out.println("Sorted Key: "+s1);
 			String value = whole.get(s1);
 			sortedLines.add(s1+" "+value);
 			
@@ -220,7 +215,6 @@ public class ThreadManager implements Runnable{
 	        }
 	        wholeIndex++;
 	    }
-	 
 	    ArrayList<String> rest;
 	    int restIndex;
 	    
@@ -254,6 +248,7 @@ public class ThreadManager implements Runnable{
 		}
 		
 		File tmpfile = new File(folder+(i+1)+".txt");
+		
 		BufferedWriter fbw = new BufferedWriter(new FileWriter(tmpfile));
 		for(String str: sortedLines) {
 			fbw.write(str);

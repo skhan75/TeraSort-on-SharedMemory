@@ -5,7 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 class BinaryFileBuffer  {
-    public static int BUFFERSIZE = 2048;
+    public static int BUFFERSIZE = 10240;
     public BufferedReader fbr;
     public File originalfile;
     private String cache;
