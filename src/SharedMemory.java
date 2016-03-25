@@ -19,11 +19,12 @@ public class SharedMemory {
 		/* Displaying the System/Hardware/CPU Information on which this code will run */
 		SystemInformation info = new SystemInformation();
 		info.info();
+		System.out.println("------------------------------------------------------------------");
 		System.out.println("\nFILE PROCESSING STARTED...\n------------------------------------------------------------------\n"
 				+ "Please Wait ! This may take time.\n");
 		inputFile = new File(input);
 		
-		System.out.println("Splitting Files into chunks");
+		System.out.println("1.Splitting Files into chunks");
 		long start = System.currentTimeMillis();
 		readerAndSplitter(input); //Reading a big file and splitting into smaller chunks according to blockSize
 		System.out.println("[You can find them in the Application's root directory as 'UNSORTED_CHUNKS]\n");
@@ -81,7 +82,6 @@ public class SharedMemory {
 					currentblocksize += line.length(); 
 				}
 				fileChunkMaker(rows, fileNo);
-				System.out.println("Chunk# "+fileNo);
 				fileNo++;
 				rows.clear();
 			}
